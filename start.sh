@@ -1,40 +1,11 @@
 #!/usr/bin/env bash
-# README.md의 3번째 줄을 /dev/urandom(또는 /dev/random)에서 읽은 값 100개로 교체하고
-# git add, git commit, git push 까지 수행하는 스크립트
-#
-# 사용법:
-#   ./replace_readme_third_line_with_random.sh [device] [count] [file] [commit-message]
-# 예:
-#   ./replace_readme_third_line_with_random.sh /dev/urandom 100 README.md "Replace 3rd line with 100 random bytes"
-#
-# device 기본값: /dev/urandom (블로킹을 피하려면 /dev/urandom 권장)
-# count 기본값: 100
-# file 기본값: README.md
-# commit-message 기본값: 자동 생성
-#
+
 set -euo pipefail
 
-device="${1:-/dev/urandom}"
-count="${2:-100}"
-file="${3:-README.md}"
-commit_msg="${4:-}"
-
-# 간단한 검사
-if [[ ! -e "$device" ]]; then
-  echo "에러: 지정한 device가 없습니다: $device" >&2
-  exit 1
-fi
-
-if [[ ! -f "$file" ]]; then
-  echo "에러: 파일이 존재하지 않습니다: $file" >&2
-  exit 1
-fi
-
-# git 저장소 확인
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo "에러: 현재 디렉토리는 git 저장소가 아닙니다." >&2
-  exit 1
-fi
+device="/dev/urandom"
+count="100"
+file="README.md"
+commit_msg=""
 
 # 현재 브랜치
 branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -49,7 +20,7 @@ if [[ -z "$random_values" ]]; then
   exit 1
 fi
 
-# 3번째 줄 교체 (awk 사용)
+# 4번째 줄 교체 (awk 사용)
 tmp="$(mktemp)"
 awk -v new="$random_values" 'NR==4{$0=new} {print}' "$file" > "$tmp"
 mv -- "$tmp" "$file"

@@ -20,9 +20,9 @@ if [[ -z "$random_values" ]]; then
   exit 1
 fi
 
-# 4번째 줄 교체 (awk 사용)
+# 10번째 줄 교체 (awk 사용)
 tmp="$(mktemp)"
-awk -v new="$random_values" 'NR==4{$0=new} {print}' "$file" > "$tmp"
+awk -v new="$random_values" 'NR==10{$0=new} {print}' "$file" > "$tmp"
 mv -- "$tmp" "$file"
 echo "파일 업데이트: $file (3번째 줄을 $count개 값으로 교체)"
 
